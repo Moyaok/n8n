@@ -11,12 +11,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- React & Babel สำหรับรัน JSX บน Browser โดยตรง -->
+    <!-- React & Babel -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body {
             font-family: 'Prompt', sans-serif;
@@ -29,114 +27,176 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React; const initialData = { storeName: "เรนจะทำอาหาร", reportDate: "31 ต.ค. 2569", reportTime: "23:00 น.", netSales: 4745, netSalesDiff: 17.5, totalOrders: 57, avgPerBill: 83.25, grossProfit: 2356, grossProfitMargin: 49.7,
-        aiInsight: "ร้านเรนจะทำอาหารมียอดขายสุทธิ 4,745 บาท และกำไรขั้นต้น 2,356 บาท โดยยอดขายมีแนวโน้มเพิ่มขึ้นจากเมื่อวาน 17.45% แต่ข้อมูลย้อนหลังไม่เพียงพอสำหรับการเปรียบเทียบกับสัปดาห์ก่อนหน้า ทั้งนี้ควรตรวจสอบรายการยกเลิกจำนวน 1 รายการ และติดตามยอดขายในช่วงเวลา
-        13:00 น. ซึ่งมียอดขายสูงสุด 980 บาท", topProducts: [ { rank: 1, name: "ข้าวผัดหมู", quantity: 15, revenue: 900 }, { rank: 2, name: "ข้าวผัดพริกแกงหมู", quantity: 8, revenue: 480 }, { rank: 3, name: "ผัดซีอิ๊วหมู", quantity: 8, revenue: 480 },
-        { rank: 4, name: "ข้าวหมูกระเทียม", quantity: 8, revenue: 475 }, { rank: 5, name: "ข้าวกะเพราไก่", quantity: 8, revenue: 440 } ] }; function App() { const [data, setData] = useState(initialData); const [n8nUrl, setN8nUrl] = useState(""); const
-        [isLoading, setIsLoading] = useState(false); const fetchDataFromN8n = async () => { if (!n8nUrl) { alert("กรุณากรอก n8n Webhook URL ก่อนครับ"); return; } setIsLoading(true); try { const res = await fetch(n8nUrl); const result = await res.json();
-        setData(result); } catch (err) { alert("ไม่สามารถดึงข้อมูลได้: " + err.message); } finally { setIsLoading(false); } }; return (
-        <div className="min-h-screen py-8 px-4 sm:px-6">
-            <div className="max-w-4xl mx-auto space-y-5">
-                {/* Control Bar */}
-                <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap gap-2 items-center justify-between">
-                    <input type="text" placeholder="วาง n8n Production Webhook URL..." value={n8nUrl} onChange={(e)=> setN8nUrl(e.target.value)} className="flex-1 min-w-[240px] px-3 py-2 text-sm border rounded-lg focus:outline-teal-600" />
-                    <button onClick={fetchDataFromN8n} disabled={isLoading} className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded-lg font-medium transition">
-                {isLoading ? "กำลังโหลด..." : "ซิงค์ข้อมูลกับ n8n"}
-              </button>
-                </div>
+        const { useState } = React;
 
-                {/* Main Card */}
-                <div className="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
-                    {/* Header */}
-                    <div className="bg-[#0f514b] text-white px-8 py-6">
-                        <span className="text-xs font-semibold tracking-wider text-teal-200 bg-teal-900/60 px-3 py-1 rounded-full uppercase">
-                  NEXTGEN FOOD · DAILY CLOSE
-                </span>
-                        <div className="mt-3 flex flex-wrap items-baseline justify-between gap-2">
-                            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">{data.storeName}</h1>
-                            <span className="text-sm font-medium text-teal-100/90">
-                    สรุปยอดขายประจำวันที่ {data.reportDate} | ปิดยอด {data.reportTime}
-                  </span>
-                        </div>
-                    </div>
+        const initialData = {
+            storeName: "เรนจะทำอาหาร",
+            reportDate: "31 ต.ค. 2569",
+            reportTime: "23:00 น.",
+            netSales: 4745,
+            netSalesDiff: 17.5,
+            totalOrders: 57,
+            avgPerBill: 83.25,
+            grossProfit: 2356,
+            grossProfitMargin: 49.7,
+            aiInsight: "ร้านเรนจะทำอาหารมียอดขายสุทธิ 4,745 บาท และกำไรขั้นต้น 2,356 บาท โดยยอดขายมีแนวโน้มเพิ่มขึ้นจากเมื่อวาน 17.45% แต่ข้อมูลย้อนหลังไม่เพียงพอสำหรับการเปรียบเทียบกับสัปดาห์ก่อนหน้า ทั้งนี้ควรตรวจสอบรายการยกเลิกจำนวน 1 รายการ และติดตามยอดขายในช่วงเวลา 13:00 น. ซึ่งมียอดขายสูงสุด 980 บาท",
+            topProducts: [
+                { rank: 1, name: "ข้าวผัดหมู", quantity: 15, revenue: 900 },
+                { rank: 2, name: "ข้าวผัดพริกแกงหมู", quantity: 8, revenue: 480 },
+                { rank: 3, name: "ผัดซีอิ๊วหมู", quantity: 8, revenue: 480 },
+                { rank: 4, name: "ข้าวหมูกระเทียม", quantity: 8, revenue: 475 },
+                { rank: 5, name: "ข้าวกะเพราไก่", quantity: 8, revenue: 440 }
+            ]
+        };
 
-                    <div className="p-6 sm:p-8 space-y-6">
-                        {/* 4 KPI Cards */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4">
-                                <p className="text-xs text-slate-500 font-medium">ยอดขายสุทธิ</p>
-                                <p className="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1">
-                                    {data.netSales.toLocaleString()} <span className="text-sm font-normal text-slate-500">บาท</span>
-                                </p>
-                                <p className="text-xs text-emerald-600 font-semibold mt-2">
-                                    ▲ {data.netSalesDiff}% เทียบวันก่อน
-                                </p>
-                            </div>
+        function App() {
+            const [data, setData] = useState(initialData);
+            const [n8nUrl, setN8nUrl] = useState("");
+            const [isLoading, setIsLoading] = useState(false);
 
-                            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4">
-                                <p className="text-xs text-slate-500 font-medium">จำนวนบิล</p>
-                                <p className="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1">
-                                    {data.totalOrders} <span className="text-sm font-normal text-slate-500">บิล</span>
-                                </p>
-                            </div>
+            const fetchDataFromN8n = async () => {
+                if (!n8nUrl.trim()) {
+                    alert("กรุณากรอก n8n Webhook URL ก่อนครับ");
+                    return;
+                }
+                setIsLoading(true);
+                try {
+                    const res = await fetch(n8nUrl);
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    const result = await res.json();
+                    
+                    // รองรับทั้งแบบส่งตรง และแบบครอบด้วย result.data
+                    const payload = result.data || result;
+                    setData(prev => ({ ...prev, ...payload }));
+                } catch (err) {
+                    alert("ไม่สามารถดึงข้อมูลได้: " + err.message);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
 
-                            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4">
-                                <p className="text-xs text-slate-500 font-medium">เฉลี่ยต่อบิล</p>
-                                <p className="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1">
-                                    {data.avgPerBill} <span className="text-sm font-normal text-slate-500">บาท</span>
-                                </p>
-                            </div>
-
-                            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4">
-                                <p className="text-xs text-slate-500 font-medium">กำไรขั้นต้น</p>
-                                <p className="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1">
-                                    {data.grossProfit.toLocaleString()} <span className="text-sm font-normal text-slate-500">บาท</span>
-                                </p>
-                                <p className="text-xs text-slate-500 mt-2">Margin {data.grossProfitMargin}%</p>
-                            </div>
-                        </div>
-
-                        {/* AI Insight */}
-                        <div className="bg-[#e8f7f0] border border-[#a2dfc4] rounded-2xl p-5">
-                            <h3 className="text-sm font-bold text-[#0c6b4d] mb-2 flex items-center gap-1.5">
-                                ✨ AI Insight (Google Gemini)
-                            </h3>
-                            <p className="text-sm text-[#184e3b] leading-relaxed">
-                                {data.aiInsight}
-                            </p>
+            return (
+                <div className="min-h-screen py-8 px-4 sm:px-6">
+                    <div className="max-w-4xl mx-auto space-y-5">
+                        {/* Control Bar */}
+                        <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap gap-2 items-center justify-between">
+                            <input
+                                type="text"
+                                placeholder="วาง n8n Production Webhook URL..."
+                                value={n8nUrl}
+                                onChange={(e) => setN8nUrl(e.target.value)}
+                                className="flex-1 min-w-[240px] px-3 py-2 text-sm border rounded-lg focus:outline-teal-600"
+                            />
+                            <button
+                                onClick={fetchDataFromN8n}
+                                disabled={isLoading}
+                                className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded-lg font-medium transition disabled:bg-slate-400"
+                            >
+                                {isLoading ? "กำลังโหลด..." : "ซิงค์ข้อมูลกับ n8n"}
+                            </button>
                         </div>
 
-                        {/* Best Sellers */}
-                        <div className="bg-slate-50/70 border border-slate-100 rounded-2xl p-6">
-                            <h3 className="text-base font-bold text-slate-800 mb-4">
-                                สินค้าขายดี 5 อันดับ
-                            </h3>
-                            <div className="divide-y divide-slate-200">
-                                {data.topProducts.map((item) => (
-                                <div key={item.rank} className="py-3.5 flex items-center justify-between text-sm">
-                                    <div className="flex items-center gap-3">
-                                        <span className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs ${ item.rank===1 ? 'bg-amber-400 text-white' : 'bg-slate-200 text-slate-600' }`}>
-                            {item.rank}
-                          </span>
-                                        <span className="font-semibold text-slate-800">{item.name}</span>
+                        {/* Main Card */}
+                        <div className="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
+                            {/* Header */}
+                            <div className="bg-[#0f514b] text-white px-8 py-6">
+                                <span className="text-xs font-semibold tracking-wider text-teal-200 bg-teal-900/60 px-3 py-1 rounded-full uppercase">
+                                    NEXTGEN FOOD · DAILY CLOSE
+                                </span>
+                                <div className="mt-3 flex flex-wrap items-baseline justify-between gap-2">
+                                    <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">{data.storeName}</h1>
+                                    <span className="text-sm font-medium text-teal-100/90">
+                                        สรุปยอดขายประจำวันที่ {data.reportDate} | ปิดยอด {data.reportTime}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="p-6 sm:p-8 space-y-6">
+                                {/* 4 KPI Cards */}
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4">
+                                        <p className="text-xs text-slate-500 font-medium">ยอดขายสุทธิ</p>
+                                        <p className="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1">
+                                            {Number(data.netSales || 0).toLocaleString()} <span className="text-sm font-normal text-slate-500">บาท</span>
+                                        </p>
+                                        <p className="text-xs text-emerald-600 font-semibold mt-2">
+                                            ▲ {data.netSalesDiff}% เทียบวันก่อน
+                                        </p>
                                     </div>
-                                    <div className="flex items-center gap-6">
-                                        <span className="text-slate-500">{item.quantity} ชิ้น</span>
-                                        <span className={`font-bold w-20 text-right ${ item.rank===1 ? 'text-amber-500 text-base font-extrabold' : 'text-slate-700' }`}>
-                            {item.revenue.toLocaleString()} บาท
-                          </span>
+
+                                    <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4">
+                                        <p className="text-xs text-slate-500 font-medium">จำนวนบิล</p>
+                                        <p className="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1">
+                                            {data.totalOrders} <span className="text-sm font-normal text-slate-500">บิล</span>
+                                        </p>
+                                    </div>
+
+                                    <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4">
+                                        <p className="text-xs text-slate-500 font-medium">เฉลี่ยต่อบิล</p>
+                                        <p className="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1">
+                                            {data.avgPerBill} <span className="text-sm font-normal text-slate-500">บาท</span>
+                                        </p>
+                                    </div>
+
+                                    <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4">
+                                        <p className="text-xs text-slate-500 font-medium">กำไรขั้นต้น</p>
+                                        <p className="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1">
+                                            {Number(data.grossProfit || 0).toLocaleString()} <span className="text-sm font-normal text-slate-500">บาท</span>
+                                        </p>
+                                        <p className="text-xs text-slate-500 mt-2">Margin {data.grossProfitMargin}%</p>
                                     </div>
                                 </div>
-                                ))}
+
+                                {/* AI Insight */}
+                                <div className="bg-[#e8f7f0] border border-[#a2dfc4] rounded-2xl p-5">
+                                    <h3 className="text-sm font-bold text-[#0c6b4d] mb-2 flex items-center gap-1.5">
+                                        ✨ AI Insight (Google Gemini)
+                                    </h3>
+                                    <p className="text-sm text-[#184e3b] leading-relaxed">
+                                        {data.aiInsight}
+                                    </p>
+                                </div>
+
+                                {/* Best Sellers */}
+                                <div className="bg-slate-50/70 border border-slate-100 rounded-2xl p-6">
+                                    <h3 className="text-base font-bold text-slate-800 mb-4">
+                                        สินค้าขายดี 5 อันดับ
+                                    </h3>
+                                    <div className="divide-y divide-slate-200">
+                                        {(data.topProducts || []).map((item) => (
+                                            <div key={item.rank} className="py-3.5 flex items-center justify-between text-sm">
+                                                <div className="flex items-center gap-3">
+                                                    <span className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs ${
+                                                        item.rank === 1 ? 'bg-amber-400 text-white' : 'bg-slate-200 text-slate-600'
+                                                    }`}>
+                                                        {item.rank}
+                                                    </span>
+                                                    <span className="font-semibold text-slate-800">{item.name}</span>
+                                                </div>
+                                                <div className="flex items-center gap-6">
+                                                    <span className="text-slate-500">{item.quantity} ชิ้น</span>
+                                                    <span className={`font-bold w-20 text-right ${
+                                                        item.rank === 1 ? 'text-amber-500 text-base font-extrabold' : 'text-slate-700'
+                                                    }`}>
+                                                        {Number(item.revenue || 0).toLocaleString()} บาท
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
-
                     </div>
                 </div>
-            </div>
-        </div>
-        ); } const root = ReactDOM.createRoot(document.getElementById('root')); root.render(
-        <App />);
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 
